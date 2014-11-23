@@ -10,15 +10,28 @@ import org.losi.controlador.acciones.Accion;
 
 public class BarraMenu extends JMenuBar {
 
+    private JMenu jMenuSesion;
     private JMenu jMenuCatalogos;
-    private final JMenuItem[]  jMenuItems = {
+
+    private final JMenuItem[]  itemsMenuSesion = {
+        new JMenuItem("Iniciar"),
+        new JMenuItem("Salir")
+    };
+    
+    private final JMenuItem[] itemsMenuCatalogo = {
         new JMenuItem("Clientes"),
         new JMenuItem("Empleados"),
         new JMenuItem("Películas"),
         new JMenuItem("Copias de películas"),
         new JMenuItem("Genero")
     };
-    private final String [] names = {
+    
+    private final String[] accionesItemsSesion = {
+        "IniciaSesion",
+        "CierraSesion"
+    };
+    
+    private final String[] accionesItemsCatalogo = {
         "MuestraCatClientes",
         "MuestraCatEmpleados",
         "MuestraCatPeliculas",
@@ -26,24 +39,40 @@ public class BarraMenu extends JMenuBar {
         "MuestraCatGeneros"
     };
 
-    public BarraMenu(Container componente){
+    public BarraMenu(Container componente) {
         addComponentes();
         addEventos(componente);
     }
-    
-    private void addComponentes(){
+
+    private void addComponentes() {
+        jMenuSesion = new JMenu("Sesión");
         jMenuCatalogos = new JMenu("Catálogos");
+        
+        add(jMenuSesion);
         add(jMenuCatalogos);
-        for (int i = 0; i < jMenuItems.length; i++) {
-            jMenuCatalogos.add(jMenuItems[i]);
-            jMenuItems[i].setName(names[i]);
+        
+        for (int i = 0; i < itemsMenuSesion.length; i++) {
+            jMenuSesion.add(itemsMenuSesion[i]);
+            itemsMenuSesion[i].setName(accionesItemsSesion[i]);
+        }
+        
+        for (int i = 0; i < itemsMenuCatalogo.length; i++) {
+            jMenuCatalogos.add(itemsMenuCatalogo[i]);
+            itemsMenuCatalogo[i].setName(accionesItemsCatalogo[i]);
         }
     }
-    
-    private void addEventos(Container componente){
-        for (JMenuItem jMenuItem : jMenuItems) {
+
+    private void addEventos(Container componente) {
+        for (JMenuItem jMenuItem : itemsMenuCatalogo) {
             jMenuItem.addActionListener((ActionEvent e) -> {
-                String tipo = ((JComponent)e.getSource()).getName();
+                String tipo = ((JComponent) e.getSource()).getName();
+                Accion accion = Accion.getAccion(tipo);
+                accion.ejecutar(componente);
+            });
+        }
+        for (JMenuItem jMenuItem : itemsMenuSesion) {
+            jMenuItem.addActionListener((ActionEvent e) -> {
+                String tipo = ((JComponent) e.getSource()).getName();
                 Accion accion = Accion.getAccion(tipo);
                 accion.ejecutar(componente);
             });
@@ -51,4 +80,3 @@ public class BarraMenu extends JMenuBar {
     }
 
 }
-

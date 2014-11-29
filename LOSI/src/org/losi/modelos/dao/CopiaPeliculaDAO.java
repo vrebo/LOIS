@@ -1,6 +1,5 @@
 package org.losi.modelos.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.losi.modelos.bo.CopiaPelicula;
 import org.losi.modelos.bo.Pelicula;
-
 
 public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
 
@@ -22,12 +20,11 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
     public final static String precioDAO = propiedades.getProperty("copia-precio");
     public final static String estadoDAO = propiedades.getProperty("copia-estado");
     public final static String comentariosDAO = propiedades.getProperty("copia-comentarios");
-   
+
     @Override
     public boolean persistir(CopiaPelicula e) {
-        Connection con = DataBaseHelper.getConexion();
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO " + nombreTabla + " ("
                     + codigoDAO + ", "
@@ -47,26 +44,16 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             ps.setString(6, e.getComentarios());
             ps.setLong(7, e.getPelicula().getIdPelicula());
             ps.executeUpdate();
-            con.commit();
-            con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
     public boolean actualizar(CopiaPelicula e) {
-        Connection con = DataBaseHelper.getConexion();
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
                     "UPDATE " + nombreTabla + " SET "
                     + codigoDAO + " = ?, "
@@ -87,52 +74,33 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             ps.executeUpdate();
             con.commit();
             con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(CopiaPeliculaDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
     public boolean eliminar(CopiaPelicula e) {
-        Connection con = DataBaseHelper.getConexion();
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
                     "DELETE FROM " + nombreTabla + " WHERE "
                     + idCopiaPeliculaDAO + " = ?;");
             ps.setLong(1, e.getIdCopiaPelicula());
             ps.execute();
-            con.commit();
-            con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(CopiaPeliculaDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
     public List<CopiaPelicula> buscarTodos() {
-        Connection con = DataBaseHelper.getConexion();
         ArrayList<CopiaPelicula> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM " + nombreTabla + ";";
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -144,37 +112,25 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
                 String comentarios = rs.getString(comentariosDAO);
                 double precio = rs.getDouble(precioDAO);
                 long idPelicula = rs.getLong(PeliculaDAO.idPeliculaDAO);
-                PeliculaDAO peliculaDAO = new PeliculaDAO();
+                PeliculaDAO peliculaDAO = new PeliculaDAO(con);
                 Pelicula pelicula = peliculaDAO.buscarPorId(idPelicula);
                 lista.add(new CopiaPelicula(idCopiaPelicula, pelicula, codigo, formato, fechaAdquisicion, precio, estado, comentarios));
             }
-            con.commit();
-            con.close();
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                Logger.getLogger(CopiaPeliculaDAO.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex1) {
-                Logger.getLogger(CopiaPeliculaDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
         }
         return lista;
     }
 
     @Override
     public CopiaPelicula buscarPorId(Long id) {
-        Connection con = DataBaseHelper.getConexion();
         CopiaPelicula e = null;
         String statement
                 = "SELECT * FROM " + nombreTabla + " WHERE "
                 + idCopiaPeliculaDAO + " = ? ;";
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
-
             rs.next();
             long idCopiaPelicula = rs.getLong(idCopiaPeliculaDAO);
             String formato = rs.getString(formatoDAO);
@@ -187,16 +143,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             PeliculaDAO peliculaDAO = new PeliculaDAO();
             Pelicula pelicula = peliculaDAO.buscarPorId(idPelicula);
             e = new CopiaPelicula(idCopiaPelicula, pelicula, codigo, formato, fechaAdquisicion, precio, estado, comentarios);
-            con.commit();
-            con.close();
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
         }
         return e;
     }

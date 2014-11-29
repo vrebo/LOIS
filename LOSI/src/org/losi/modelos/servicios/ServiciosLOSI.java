@@ -32,71 +32,70 @@ private final PeliculaDAO peliculaDAO;
     }
     
     public List<Pelicula> catalogoPeliculas(){
-        return peliculaDAO.buscarTodos();
+        return peliculaDAO.buscarTodosCommit();
     }
     
     public List<Genero> catalogoGeneros(){
-        return generoDAO.buscarTodos();
+        return generoDAO.buscarTodosCommit();
     }
     
     public List<Empleado> catalogoEmpleados(){
-        return empleadoDAO.buscarTodos();
+        return empleadoDAO.buscarTodosCommit();
     }
     
     public List<Cliente> catalogoClientes(){
-        return clienteDAO.buscarTodos();
+        return clienteDAO.buscarTodosCommit();
     }
     
     public List<CopiaPelicula> catalogoCopias(){
-        return copiaDAO.buscarTodos();
+        return copiaDAO.buscarTodosCommit();
     }
     
         public void altaEmpleado(Empleado e){
-        empleadoDAO.persistir(e);
+        empleadoDAO.persistirCommit(e);
     }
     
     public void altaCliente(Cliente e){
-        clienteDAO.persistir(e);
+        clienteDAO.persistirCommit(e);
     }
     
     public void altaGenero(Genero e){
-        generoDAO.persistir(e);
+        generoDAO.persistirCommit(e);
     }
     
     public void altaPelicula(Pelicula e){
-        peliculaDAO.persistir(e);
+        peliculaDAO.persistirCommit(e);
     }
     
     public void altaCopiaPelicula(CopiaPelicula e){
-        copiaDAO.persistir(e);
+        copiaDAO.persistirCommit(e);
     }
     
     public void altaVenta(Venta e){
-        ventaDAO.persistir(e);
+        ventaDAO.persistirCommit(e);
     }
     
     public void actualizaEmpleado(Empleado e){
-        empleadoDAO.actualizar(e);
+        empleadoDAO.actualizarCommit(e);
     }
     
     public void actualizaCliente(Cliente e){
-        clienteDAO.actualizar(e);
+        clienteDAO.actualizarCommit(e);
     }
     
     public void actualizaGenero(Genero e){
-        generoDAO.actualizar(e);
+        generoDAO.actualizarCommit(e);
     }
     
     public void actualizaPelicula(Pelicula e){
-        peliculaDAO.actualizar(e);
+        peliculaDAO.actualizarCommit(e);
     }
     
     public void actualizaCopiaPelicula(CopiaPelicula e){
-        copiaDAO.actualizar(e);
+        copiaDAO.actualizarCommit(e);
     }
     
     public void actualizaVenta(Venta e){
-        ventaDAO.actualizar(e);
+        ventaDAO.actualizarCommit(e);
     }
-    
 }

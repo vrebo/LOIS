@@ -50,6 +50,7 @@ public class BarraMenu extends JMenuBar {
         
         add(jMenuSesion);
         add(jMenuCatalogos);
+        setVisible(false);
         
         for (int i = 0; i < itemsMenuSesion.length; i++) {
             jMenuSesion.add(itemsMenuSesion[i]);
@@ -62,19 +63,19 @@ public class BarraMenu extends JMenuBar {
         }
     }
 
-    private void addEventos(Container componente) {
+    private void addEventos(Container contenedor) {
         for (JMenuItem jMenuItem : itemsMenuCatalogo) {
             jMenuItem.addActionListener((ActionEvent e) -> {
                 String tipo = ((JComponent) e.getSource()).getName();
                 Accion accion = Accion.getAccion(tipo);
-                accion.ejecutar(componente);
+                accion.ejecutar(contenedor);
             });
         }
         for (JMenuItem jMenuItem : itemsMenuSesion) {
             jMenuItem.addActionListener((ActionEvent e) -> {
                 String tipo = ((JComponent) e.getSource()).getName();
                 Accion accion = Accion.getAccion(tipo);
-                accion.ejecutar(componente);
+                accion.ejecutar(contenedor);
             });
         }
     }

@@ -7,10 +7,9 @@ import org.losi.vistas.catalogos.Catalogo;
 public class MuestraCatPeliculasAccion extends Accion{
 
     @Override
-    public void tarea(Container contenedor) {
+    public void tarea(Container contenedor, Object... args) {
         Catalogo catalogo = ((VistaPrincipal)contenedor).getPeliculaCatalogo();
-        catalogo.show();
-        catalogo.toFront();
+        Accion.getAccion("MuestraCatalogo").ejecutar(contenedor, catalogo);
     }
     
 }

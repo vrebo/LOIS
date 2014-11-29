@@ -6,6 +6,10 @@
 
 package org.losi.vistas.logging;
 
+import java.awt.Container;
+import javax.swing.JComponent;
+import org.losi.controlador.acciones.Accion;
+
 /**
  *
  * @author VREBO
@@ -15,8 +19,20 @@ public class LoggingForm extends javax.swing.JPanel {
     /**
      * Creates new form LoggingForm
      */
-    public LoggingForm() {
+    
+    private Container contenedor;
+    
+    public LoggingForm(Container contenedor) {
+        this.contenedor = contenedor;
         initComponents();
+    }
+
+    public Container getContenedor() {
+        return contenedor;
+    }
+
+    public void setContenedor(Container contenedor) {
+        this.contenedor = contenedor;
     }
 
     /**
@@ -28,24 +44,49 @@ public class LoggingForm extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jDBCLoginService1 = new org.jdesktop.swingx.auth.JDBCLoginService();
         jXLoginPane1 = new org.jdesktop.swingx.JXLoginPane();
+        conectar = new javax.swing.JButton();
+
+        jXLoginPane1.setSaveMode(org.jdesktop.swingx.JXLoginPane.SaveMode.USER_NAME);
+
+        conectar.setText("Conectar");
+        conectar.setName("IniciaSesion"); // NOI18N
+        conectar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                conectarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jXLoginPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jXLoginPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(conectar)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jXLoginPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jXLoginPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(conectar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void conectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conectarActionPerformed
+        // TODO add your handling code here:
+        String tipo = ((JComponent)evt.getSource()).getName();
+        Accion.getAccion(tipo).ejecutar(contenedor);
+    }//GEN-LAST:event_conectarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton conectar;
+    private org.jdesktop.swingx.auth.JDBCLoginService jDBCLoginService1;
     private org.jdesktop.swingx.JXLoginPane jXLoginPane1;
     // End of variables declaration//GEN-END:variables
 }

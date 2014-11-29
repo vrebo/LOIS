@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.losi.modelos.bo.Empleado;
 
 public class EmpleadoDAO extends GenericDAO<Empleado, String> {
@@ -24,11 +22,16 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
     public final static String estadoDAO = propiedades.getProperty("empleado-estado");
     public final static String puestoDAO = propiedades.getProperty("empleado-puesto");
 
+    public EmpleadoDAO(){}
+    
+    public EmpleadoDAO(Connection con){
+        this.con = con;
+    }
+    
     @Override
-    public boolean persistir(Empleado e) {
-        Connection con = DataBaseHelper.getConexion();
+    public boolean persistir(Empleado e){
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO " + nombreTabla + " ("
                             + idEmpleadoDAO +", "
@@ -53,26 +56,16 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
             ps.setString(8, e.getEstado());
             ps.setString(9, e.getPuesto());
             ps.execute();
-            con.commit();
-            con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
-    public boolean actualizar(Empleado e) {
-        Connection con = DataBaseHelper.getConexion();
+    public boolean actualizar(Empleado e){
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
                     "UPDATE " + nombreTabla + " SET "
                     + nombreDAO +" = ?, "
@@ -97,59 +90,36 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
             ps.setString(9, e.getPuesto());
             ps.setString(10, e.getIdEmpleado());
             ps.executeUpdate();
-            con.commit();
-            con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
-    public boolean eliminar(Empleado e) {
-        Connection con = DataBaseHelper.getConexion();
+    public boolean eliminar(Empleado e){
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
                     "DELETE FROM " + nombreTabla + " WHERE "
                             + idEmpleadoDAO
                             + " = ?;");
             ps.setString(1, e.getIdEmpleado());
             ps.execute();
-            con.commit();
-            con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
-    public List<Empleado> buscarTodos() {
-        Connection con = DataBaseHelper.getConexion();
+    public List<Empleado> buscarTodos(){
         ArrayList<Empleado> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM " + nombreTabla + ";";
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
             ResultSet rs = ps.executeQuery();
-            con.commit();
-            con.close();
             while (rs.next()) {
                 String idEmpleado = rs.getString(1);
                 String nombre = rs.getString(2);
@@ -163,28 +133,18 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
                 String puesto = rs.getString(10);
                 lista.add(new Empleado(idEmpleado, horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro));
             }
-
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
         }
         return lista;
     }
 
     @Override
-    public Empleado buscarPorId(String id) {
-        Connection con = DataBaseHelper.getConexion();
+    public Empleado buscarPorId(String id){
         Empleado e = null;
         String statement
                 = "SELECT * FROM " + nombreTabla + " WHERE "
                 + idEmpleadoDAO + " = ? ;";
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
@@ -201,16 +161,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
             String estado = rs.getString(9);
             String puesto = rs.getString(10);
             e = new Empleado(idEmpleado, horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro);
-            con.commit();
-            con.close();
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
         }
         return e;
     }

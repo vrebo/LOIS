@@ -1,7 +1,11 @@
 package org.losi.vistas.catalogos;
 
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyVetoException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
@@ -11,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.table.TableModel;
 import org.losi.controlador.acciones.Accion;
 import org.jdesktop.swingx.JXTable;
+import org.losi.controlador.acciones.MuestraCatalogoAccion;
 
 public class Catalogo extends JInternalFrame {
 
@@ -20,10 +25,10 @@ public class Catalogo extends JInternalFrame {
     private final TableModel tableModel;
     protected final String accion;
 
-    public Catalogo(String titulo, String nombre, TableModel tableModel) {
+    public Catalogo(String titulo, String accion, TableModel tableModel) {
         this.setTitle(titulo);
-        this.setName(nombre);
-        this.accion = nombre;
+        this.setName(accion);
+        this.accion = accion;
         this.tableModel = tableModel;
         addComponentes();
         addEventos(this);
@@ -55,12 +60,12 @@ public class Catalogo extends JInternalFrame {
 
     @Override
     public void show() {
-        super.show();
         Dimension deskopSize = getDesktopPane().getSize();
         Dimension catalogoSize = getSize();
-        int x = deskopSize.width/2 - catalogoSize.width/2;
-        int y = deskopSize.height/2 - catalogoSize.height/2;
+        int x = deskopSize.width / 2 - catalogoSize.width / 2;
+        int y = deskopSize.height / 2 - catalogoSize.height / 2;
         setLocation(x, y);
+        super.show();
         Accion.getAccion(accion).ejecutar(this);
     }
 
@@ -85,11 +90,11 @@ public class Catalogo extends JInternalFrame {
             add(jMenuOpciones);
         }
 
-        public void addEventos(JComponent componente) {
+        public void addEventos(Container contenedor) {
             jMenuItemActualizar.addActionListener((ActionEvent e) -> {
-                String tipo = ((JComponent) e.getSource()).getName();
+                String tipo = ((Container) e.getSource()).getName();
                 Accion accion = Accion.getAccion(tipo);
-                accion.ejecutar(componente);
+                accion.ejecutar(contenedor);
             });
         }
     }

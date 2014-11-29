@@ -9,7 +9,7 @@ import org.losi.modelos.bo.Pelicula;
 public class ActualizaCatPeliculaAccion extends Accion {
 
     @Override
-    public void tarea(Container contenedor) {
+    public void tarea(Container contenedor, Object... args) {
             Catalogo catalogo = (Catalogo) contenedor;
             List<Pelicula> lista = servicios.catalogoPeliculas();
             PeliculaTableModel modelo = (PeliculaTableModel) catalogo.getjXTable().getModel();

@@ -9,7 +9,7 @@ import org.losi.modelos.bo.Genero;
 public class ActualizaCatGeneroAccion extends Accion{
 
     @Override
-    public void tarea(Container contenedor) {
+    public void tarea(Container contenedor, Object... args) {
         Catalogo catalogo = (Catalogo)contenedor;
         List<Genero> lista = servicios.catalogoGeneros();
         GeneroTableModel modelo = (GeneroTableModel) catalogo.getjXTable().getModel();

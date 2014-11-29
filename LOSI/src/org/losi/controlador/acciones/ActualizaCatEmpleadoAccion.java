@@ -9,7 +9,7 @@ import org.losi.modelos.bo.Empleado;
 public class ActualizaCatEmpleadoAccion extends Accion{
 
     @Override
-    public void tarea(Container contenedor) {
+    public void tarea(Container contenedor, Object... args) {
         Catalogo catalogo = (Catalogo)contenedor;
         List<Empleado> lista = servicios.catalogoEmpleados();
         EmpleadoTableModel modelo = (EmpleadoTableModel) catalogo.getjXTable().getModel();

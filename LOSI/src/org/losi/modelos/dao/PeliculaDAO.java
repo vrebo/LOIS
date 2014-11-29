@@ -22,11 +22,17 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
     public final static String clasificacionDAO = propiedades.getProperty("pelicula-clasificacion");
     public final static String tituloDAO = propiedades.getProperty("pelicula-titulo");
 
+    public PeliculaDAO() {
+    }
+
+    public PeliculaDAO(Connection con) {
+        super(con);
+    }
+
     @Override
     public boolean persistir(Pelicula e) {
-        Connection con = DataBaseHelper.getConexion();
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO " + nombreTabla + " ("
                     + tituloDAO + ", "
@@ -46,26 +52,16 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             ps.setString(6, e.getClasificacion());
             ps.setLong(7, e.getGenero().getIdGenero());
             ps.executeUpdate();
-            con.commit();
-            con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(PeliculaDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
     public boolean actualizar(Pelicula e) {
-        Connection con = DataBaseHelper.getConexion();
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
                     "UPDATE " + nombreTabla + " SET "
                     + tituloDAO + " = ?, "
@@ -86,54 +82,33 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             ps.setLong(7, e.getGenero().getIdGenero());
             ps.setLong(8, e.getIdPelicula());
             ps.executeUpdate();
-            con.commit();
-            con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
     public boolean eliminar(Pelicula e) {
-        Connection con = DataBaseHelper.getConexion();
+        boolean result = false;
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "DELETE FROM " + nombreTabla  + " WHERE "
+                    "DELETE FROM " + nombreTabla + " WHERE "
                     + idPeliculaDAO + " = ?;");
             ps.setLong(1, e.getIdPelicula());
             ps.execute();
-            con.commit();
-            con.close();
+            result = true;
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                System.out.println(ex.getMessage());
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            return false;
         }
-        return true;
+        return result;
     }
 
     @Override
     public List<Pelicula> buscarTodos() {
-        Connection con = DataBaseHelper.getConexion();
         ArrayList<Pelicula> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM " + nombreTabla + ";";
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -145,38 +120,26 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
                     String clasificacion = rs.getString(clasificacionDAO);
                     String duracion = rs.getString(duracionDAO);
                     long idGenero = rs.getLong(GeneroDAO.idGeneroDAO);
-                    GeneroDAO generoDAO = new GeneroDAO();
+                    GeneroDAO generoDAO = new GeneroDAO(con);
                     Genero genero = generoDAO.buscarPorId(idGenero);
                     lista.add(new Pelicula(idPelicula, genero, "portada", estelares, titulo, anioEstreno, director, clasificacion, duracion));
-                    con.commit();
                 }
             }
-
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
         }
         return lista;
     }
 
     @Override
     public Pelicula buscarPorId(Long id) {
-        Connection con = DataBaseHelper.getConexion();
         Pelicula e = null;
         String statement
                 = "SELECT * FROM " + nombreTabla + " WHERE "
                 + idPeliculaDAO + " = ? ;";
         try {
-            con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
-
             rs.next();
             long idPelicula = rs.getLong(idPeliculaDAO);
             String titulo = rs.getString(tituloDAO);
@@ -186,19 +149,10 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             String clasificacion = rs.getString(clasificacionDAO);
             String duracion = rs.getString(duracionDAO);
             long idGenero = rs.getLong(GeneroDAO.idGeneroDAO);
-            GeneroDAO generoDAO = new GeneroDAO();
+            GeneroDAO generoDAO = new GeneroDAO(con);
             Genero genero = generoDAO.buscarPorId(idGenero);
             e = new Pelicula(idPelicula, genero, "portada", estelares, titulo, anioEstreno, director, clasificacion, duracion);
-            con.commit();
-            con.close();
         } catch (SQLException ex) {
-            try {
-                con.rollback();
-                con.close();
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex1) {
-                Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
-            }
         }
         return e;
     }

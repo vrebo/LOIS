@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 public class CierraSesionAccion extends Accion{
 
     @Override
-    public void tarea(Container contenedor) {
+    public void tarea(Container contenedor, Object... args) {
         System.out.println("CerrarSesionAccion");
         JOptionPane.showConfirmDialog(contenedor, "¿De verdad desea cerrar sesión?");
     }

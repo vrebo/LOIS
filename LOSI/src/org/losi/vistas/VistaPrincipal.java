@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.losi.vistas;
 
-import java.awt.Dimension;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import org.losi.modelos.bo.Conexion;
@@ -17,41 +12,39 @@ import org.losi.vistas.catalogos.EmpleadoCatalogo;
 import org.losi.vistas.catalogos.GeneroCatalogo;
 import org.losi.vistas.catalogos.PeliculaCatalogo;
 import org.losi.vistas.componentes.BarraMenu;
+import org.losi.vistas.logging.LoggingForm;
 
-/**
- *
- * @author VREBO
- */
-public class VistaPrincipal extends JFrame{
-    
-     private ClienteCatalogo clienteCatalogo;
+public class VistaPrincipal extends JFrame {
+
+    private ClienteCatalogo clienteCatalogo;
     private EmpleadoCatalogo empleadoCatalogo;
     private GeneroCatalogo generoCatalogo;
     private PeliculaCatalogo peliculaCatalogo;
     private CopiaPeliculaCatalogo copiaCatalogo;
     private JDesktopPane jDesktopPane1;
-    
+    private LoggingForm loggingForm;
+
     public VistaPrincipal() {
         DataBaseHelper.setConexion(new Conexion());
         addComponentes();
     }
-    
-    private void addComponentes(){
+
+    private void addComponentes() {
+        loggingForm = new LoggingForm(this);
         jDesktopPane1 = new javax.swing.JDesktopPane();
         clienteCatalogo = new ClienteCatalogo();
         empleadoCatalogo = new EmpleadoCatalogo();
         generoCatalogo = new GeneroCatalogo();
         peliculaCatalogo = new PeliculaCatalogo();
         copiaCatalogo = new CopiaPeliculaCatalogo();
-        
+
+        clienteCatalogo.dispose();
+
         setJMenuBar(new BarraMenu(this));
-        setContentPane(jDesktopPane1);
+        setContentPane(loggingForm);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Información Lord Ordo");
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //setUndecorated(true);//Verdadero FullScreen HD
-        setMinimumSize(new Dimension(700, 600));
-        
+//        setUndecorated(true);//Verdadero FullScreen HD
         jDesktopPane1.add(clienteCatalogo);
         jDesktopPane1.add(empleadoCatalogo);
         jDesktopPane1.add(generoCatalogo);
@@ -59,12 +52,12 @@ public class VistaPrincipal extends JFrame{
         jDesktopPane1.add(copiaCatalogo);
         pack();
         setLocationRelativeTo(null);//Centra el JFrame en la pantalla
-        
+
     }
 
-//    public JDesktopPane getjDesktopPane1() {
-//        return jDesktopPane1;
-//    }
+    public JDesktopPane getjDesktopPane1() {
+        return jDesktopPane1;
+    }
 
     public ClienteCatalogo getClienteCatalogo() {
         return clienteCatalogo;
@@ -85,7 +78,27 @@ public class VistaPrincipal extends JFrame{
     public CopiaPeliculaCatalogo getCopiaCatalogo() {
         return copiaCatalogo;
     }
-    
+
+    public void setClienteCatalogo(ClienteCatalogo clienteCatalogo) {
+        this.clienteCatalogo = clienteCatalogo;
+    }
+
+    public void setEmpleadoCatalogo(EmpleadoCatalogo empleadoCatalogo) {
+        this.empleadoCatalogo = empleadoCatalogo;
+    }
+
+    public void setGeneroCatalogo(GeneroCatalogo generoCatalogo) {
+        this.generoCatalogo = generoCatalogo;
+    }
+
+    public void setPeliculaCatalogo(PeliculaCatalogo peliculaCatalogo) {
+        this.peliculaCatalogo = peliculaCatalogo;
+    }
+
+    public void setCopiaCatalogo(CopiaPeliculaCatalogo copiaCatalogo) {
+        this.copiaCatalogo = copiaCatalogo;
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -108,6 +121,13 @@ public class VistaPrincipal extends JFrame{
         //</editor-fold>
 
         /* Create and display the form */
+        try {
+            /* Create and display the form */
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(VistaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         java.awt.EventQueue.invokeLater(() -> {
             new VistaPrincipal().setVisible(true);
         });

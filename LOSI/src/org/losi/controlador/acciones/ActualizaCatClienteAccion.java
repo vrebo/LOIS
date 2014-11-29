@@ -9,7 +9,7 @@ import org.losi.modelos.bo.Cliente;
 public class ActualizaCatClienteAccion extends Accion{
 
     @Override
-    public void tarea(Container contenedor) {
+    public void tarea(Container contenedor, Object... args) {
         Catalogo catalogo = (Catalogo)contenedor;
         List<Cliente> lista = servicios.catalogoClientes();
         ClienteTableModel modelo = (ClienteTableModel) catalogo.getjXTable().getModel();

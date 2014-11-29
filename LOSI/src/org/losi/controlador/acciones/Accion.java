@@ -1,7 +1,6 @@
 package org.losi.controlador.acciones;
 
 import java.awt.Container;
-import javax.swing.JComponent;
 import org.losi.modelos.servicios.ServiciosLOSI;
 
 public abstract class Accion {
@@ -20,11 +19,11 @@ public abstract class Accion {
         return accion;
     }
 
-    public void ejecutar(Container contenedor){
+    public void ejecutar(Container contenedor, Object... args){
         new Thread(() -> {
-            tarea(contenedor);
+            tarea(contenedor, args);
         }).start();
     }
     
-    public abstract void tarea(Container contenedor);
+    public abstract void tarea(Container contenedor, Object... args);
 }

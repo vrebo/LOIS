@@ -27,6 +27,17 @@ public class Conexion {
         password = propiedades.getProperty("password");
     }    
     
+    public Conexion(String user, String password){
+        propiedades = getProperties();
+        driver= propiedades.getProperty("driver");
+        url = propiedades.getProperty("url");
+        host = propiedades.getProperty("host");
+        port = propiedades.getProperty("puerto");
+        baseDatos = propiedades.getProperty("nombre-bd");propiedades = getProperties();
+        this.user = user;
+        this.password = password;
+    }
+    
     private Properties getProperties() {
         Properties defaultProps = new Properties();
         Properties props = null;

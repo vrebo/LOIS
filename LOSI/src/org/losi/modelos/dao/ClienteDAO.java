@@ -20,16 +20,10 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
     public final static String fechaNacimientoDAO = propiedades.getProperty("cliente-fecha-nacimiento");
     public final static String fechaRegistroDAO = propiedades.getProperty("cliente-fecha-registro");
 
-    public ClienteDAO(){}
-    
-    public ClienteDAO(Connection con){
-        this.con = con;
-    }
-    
     @Override
-    public boolean persistir(Cliente e) {
+    public boolean persistir(Cliente e, Connection con) {
         try {
-            PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO " + nombreTabla + " ("
                     + idClienteDAO + ", "
                     + nombreDAO + ", "
@@ -37,14 +31,15 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
                     + apellidoMaternoDAO + ", "
                     + fechaNacimientoDAO + ", "
                     + fechaRegistroDAO + " "
-                    + ") VALUES (?, ?, ?, ?, ?::timestamp, ?::timestamp);");
-            ps.setString(1, e.getIdCliente());
-            ps.setString(2, e.getNombre());
-            ps.setString(3, e.getApellidoPaterno());
-            ps.setString(4, e.getApellidoMaterno());
-            ps.setString(5, e.getFechaNacimiento());
-            ps.setString(6, e.getFechaRegistro());
-            ps.execute();
+                    + ") VALUES (?, ?, ?, ?, ?::timestamp, ?::timestamp);")) {
+                ps.setString(1, e.getIdCliente());
+                ps.setString(2, e.getNombre());
+                ps.setString(3, e.getApellidoPaterno());
+                ps.setString(4, e.getApellidoMaterno());
+                ps.setString(5, e.getFechaNacimiento());
+                ps.setString(6, e.getFechaRegistro());
+                ps.execute();
+            }
         } catch (SQLException ex1) {
             Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
         }
@@ -52,10 +47,10 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
     }
 
     @Override
-    public boolean actualizar(Cliente e) {
+    public boolean actualizar(Cliente e, Connection con) {
         boolean result = false;
         try {
-            PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = con.prepareStatement(
                     "UPDATE " + nombreTabla + " SET "
                     + nombreDAO + " = ?, "
                     + apellidoPaternoDAO + " = ?, "
@@ -63,14 +58,15 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
                     + fechaNacimientoDAO + " = ?::timestamp, "
                     + fechaRegistroDAO + " = ?::timestamp "
                     + " WHERE "
-                    + idClienteDAO + " = ?;");
-            ps.setString(1, e.getNombre());
-            ps.setString(2, e.getApellidoPaterno());
-            ps.setString(3, e.getApellidoMaterno());
-            ps.setString(4, e.getFechaNacimiento());
-            ps.setString(5, e.getFechaRegistro());
-            ps.setString(6, e.getIdCliente());
-            ps.executeUpdate();
+                    + idClienteDAO + " = ?;")) {
+                ps.setString(1, e.getNombre());
+                ps.setString(2, e.getApellidoPaterno());
+                ps.setString(3, e.getApellidoMaterno());
+                ps.setString(4, e.getFechaNacimiento());
+                ps.setString(5, e.getFechaRegistro());
+                ps.setString(6, e.getIdCliente());
+                ps.executeUpdate();
+            }
             result = true;
         } catch (SQLException ex) {
         }
@@ -78,14 +74,15 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
     }
 
     @Override
-    public boolean eliminar(Cliente e) {
+    public boolean eliminar(Cliente e, Connection con) {
         boolean result = false;
         try {
-            PreparedStatement ps = con.prepareStatement(
+            try (PreparedStatement ps = con.prepareStatement(
                     "DELETE FROM " + nombreTabla + " WHERE "
-                    + idClienteDAO + " = ?;");
-            ps.setString(1, e.getIdCliente());
-            ps.execute();
+                    + idClienteDAO + " = ?;")) {
+                ps.setString(1, e.getIdCliente());
+                ps.execute();
+            }
             result = true;
         } catch (SQLException ex) {
         }
@@ -93,46 +90,48 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
     }
 
     @Override
-    public List<Cliente> buscarTodos() {
+    public List<Cliente> buscarTodos(Connection con) {
         ArrayList<Cliente> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM " + nombreTabla + ";";
         try {
-            PreparedStatement ps = con.prepareStatement(statement);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String idCliente = rs.getString(idClienteDAO);
-                String nombre = rs.getString(nombreDAO);
-                String apellidoPaterno = rs.getString(apellidoPaternoDAO);
-                String apellidoMaterno = rs.getString(apellidoMaternoDAO);
-                String fechaNacimiento = rs.getString(fechaNacimientoDAO);
-                String fechaRegistro = rs.getString(fechaRegistroDAO);
-                lista.add(new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro));
+            try (PreparedStatement ps = con.prepareStatement(statement); ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String idCliente = rs.getString(idClienteDAO);
+                    String nombre = rs.getString(nombreDAO);
+                    String apellidoPaterno = rs.getString(apellidoPaternoDAO);
+                    String apellidoMaterno = rs.getString(apellidoMaternoDAO);
+                    String fechaNacimiento = rs.getString(fechaNacimientoDAO);
+                    String fechaRegistro = rs.getString(fechaRegistroDAO);
+                    lista.add(new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro));
+                }
             }
         } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
         return lista;
     }
 
     @Override
-    public Cliente buscarPorId(String id) {
+    public Cliente buscarPorId(String id, Connection con) {
         Cliente e = null;
         String statement
                 = "SELECT * FROM " + nombreTabla + " WHERE "
                 + idClienteDAO + " = ? ;";
         try {
-            PreparedStatement ps = con.prepareStatement(statement);
-            ps.setString(1, id);
-
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            String idCliente = rs.getString(idClienteDAO);
-            String nombre = rs.getString(nombreDAO);
-            String apellidoPaterno = rs.getString(apellidoPaternoDAO);
-            String apellidoMaterno = rs.getString(apellidoMaternoDAO);
-            String fechaNacimiento = rs.getString(fechaNacimientoDAO);
-            String fechaRegistro = rs.getString(fechaRegistroDAO);
-
+            String idCliente, nombre, apellidoPaterno, 
+                    apellidoMaterno, fechaNacimiento, fechaRegistro;
+            try (PreparedStatement ps = con.prepareStatement(statement)) {
+                ps.setString(1, id);
+                ResultSet rs = ps.executeQuery();
+                rs.next();
+                idCliente = rs.getString(idClienteDAO);
+                nombre = rs.getString(nombreDAO);
+                apellidoPaterno = rs.getString(apellidoPaternoDAO);
+                apellidoMaterno = rs.getString(apellidoMaternoDAO);
+                fechaNacimiento = rs.getString(fechaNacimientoDAO);
+                fechaRegistro = rs.getString(fechaRegistroDAO);
+            }
             e = new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro);
         } catch (SQLException ex) {
         }

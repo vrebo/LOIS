@@ -7,7 +7,7 @@
 package org.losi.vistas.logging;
 
 import java.awt.Container;
-import javax.swing.JComponent;
+import org.jdesktop.swingx.JXLoginPane;
 import org.losi.controlador.acciones.Accion;
 
 /**
@@ -26,7 +26,7 @@ public class LoggingForm extends javax.swing.JPanel {
         this.contenedor = contenedor;
         initComponents();
     }
-
+    
     public Container getContenedor() {
         return contenedor;
     }
@@ -47,8 +47,6 @@ public class LoggingForm extends javax.swing.JPanel {
         jDBCLoginService1 = new org.jdesktop.swingx.auth.JDBCLoginService();
         jXLoginPane1 = new org.jdesktop.swingx.JXLoginPane();
         conectar = new javax.swing.JButton();
-
-        jXLoginPane1.setSaveMode(org.jdesktop.swingx.JXLoginPane.SaveMode.USER_NAME);
 
         conectar.setText("Conectar");
         conectar.setName("IniciaSesion"); // NOI18N
@@ -79,8 +77,10 @@ public class LoggingForm extends javax.swing.JPanel {
 
     private void conectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_conectarActionPerformed
         // TODO add your handling code here:
-        String tipo = ((JComponent)evt.getSource()).getName();
-        Accion.getAccion(tipo).ejecutar(contenedor);
+        String tipo = ((Container)evt.getSource()).getName();
+        String user = jXLoginPane1.getUserName();
+        String password = new String(jXLoginPane1.getPassword());
+        Accion.getAccion(tipo).ejecutar(contenedor, user, password);
     }//GEN-LAST:event_conectarActionPerformed
 
 

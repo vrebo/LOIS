@@ -1,11 +1,10 @@
 package org.losi.vistas;
 
+import java.awt.Dimension;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import org.losi.modelos.bo.Conexion;
-import org.losi.modelos.dao.DataBaseHelper;
 import org.losi.vistas.catalogos.ClienteCatalogo;
 import org.losi.vistas.catalogos.CopiaPeliculaCatalogo;
 import org.losi.vistas.catalogos.EmpleadoCatalogo;
@@ -25,11 +24,10 @@ public class VistaPrincipal extends JFrame {
     private LoggingForm loggingForm;
 
     public VistaPrincipal() {
-        DataBaseHelper.setConexion(new Conexion());
         addComponentes();
     }
 
-    private void addComponentes() {
+    public final void addComponentes() {
         loggingForm = new LoggingForm(this);
         jDesktopPane1 = new javax.swing.JDesktopPane();
         clienteCatalogo = new ClienteCatalogo();
@@ -37,8 +35,6 @@ public class VistaPrincipal extends JFrame {
         generoCatalogo = new GeneroCatalogo();
         peliculaCatalogo = new PeliculaCatalogo();
         copiaCatalogo = new CopiaPeliculaCatalogo();
-
-        clienteCatalogo.dispose();
 
         setJMenuBar(new BarraMenu(this));
         setContentPane(loggingForm);
@@ -50,9 +46,13 @@ public class VistaPrincipal extends JFrame {
         jDesktopPane1.add(generoCatalogo);
         jDesktopPane1.add(peliculaCatalogo);
         jDesktopPane1.add(copiaCatalogo);
+        setMinimumSize(new Dimension());
         pack();
         setLocationRelativeTo(null);//Centra el JFrame en la pantalla
-
+    }
+    
+    public LoggingForm getLoggingForm(){
+        return loggingForm;
     }
 
     public JDesktopPane getjDesktopPane1() {
@@ -122,7 +122,6 @@ public class VistaPrincipal extends JFrame {
 
         /* Create and display the form */
         try {
-            /* Create and display the form */
             Thread.sleep(2000);
         } catch (InterruptedException ex) {
             Logger.getLogger(VistaPrincipal.class.getName()).log(Level.SEVERE, null, ex);

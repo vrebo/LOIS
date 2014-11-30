@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.losi.modelos.bo.Genero;
 
 public class GeneroDAO extends GenericDAO<Genero, Long> {
@@ -17,15 +15,8 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
     public final static String nombreDAO = propiedades.getProperty("genero-nombre");
     public final static String descripcionDAO = propiedades.getProperty("genero-descripcion");
 
-    public GeneroDAO() {
-    }
-
-    public GeneroDAO(Connection con) {
-        super(con);
-    }
-
     @Override
-    public boolean persistir(Genero e) {
+    public boolean persistir(Genero e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -36,6 +27,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
             ps.setString(1, e.getNombre());
             ps.setString(2, e.getDescripcion());
             ps.execute();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -43,7 +35,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
     }
 
     @Override
-    public boolean actualizar(Genero n) {
+    public boolean actualizar(Genero n, Connection con) {
         boolean result = false;
         String statement
                 = "UPDATE " + nombreTabla + " SET "
@@ -58,6 +50,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
             ps.setString(2, n.getDescripcion());
             ps.setLong(3, n.getIdGenero());
             ps.executeUpdate();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -65,7 +58,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
     }
 
     @Override
-    public List<Genero> buscarTodos() {
+    public List<Genero> buscarTodos(Connection con) {
         ArrayList<Genero> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM " + nombreTabla + ";";
@@ -78,13 +71,14 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
                 String descripcion = rs.getString(descripcionDAO);
                 lista.add(new Genero(idGenero, nombre, descripcion));
             }
+            ps.close();
         } catch (SQLException ex) {
         }
         return lista;
     }
 
     @Override
-    public boolean eliminar(Genero e) {
+    public boolean eliminar(Genero e, Connection con) {
         String statement
                 = "DELETE FROM " + nombreTabla + " WHERE "
                 + idGeneroDAO
@@ -93,13 +87,14 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
             PreparedStatement ps = con.prepareStatement(statement);
             ps.setLong(1, e.getIdGenero());
             ps.executeUpdate();
+            ps.close();
         } catch (SQLException ex) {
         }
         return true;
     }
 
     @Override
-    public Genero buscarPorId(Long id) {
+    public Genero buscarPorId(Long id, Connection con) {
         Genero e = null;
         String statement
                 = "SELECT * FROM " + nombreTabla + " WHERE "
@@ -112,6 +107,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
             long idGenero = rs.getLong(1);
             String nombre = rs.getString(2);
             String descripcion = rs.getString(3);
+            ps.close();
             e = new Genero(idGenero, nombre, descripcion);
         } catch (SQLException ex) {
         }

@@ -1,5 +1,6 @@
 package org.losi.modelos.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
     public final static String netoVentaDAO = propiedades.getProperty("venta-neto");
 
     @Override
-    public boolean persistir(Venta e) {
+    public boolean persistir(Venta e, Connection con) {
         boolean result = false;
         try {
             String statement = "INSERT INTO " + nombreTabla + " ("
@@ -45,6 +46,7 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
                 ps.setLong(2, copia.getIdCopiaPelicula());
                 ps.execute();
             }
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -52,7 +54,7 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
     }
 
     @Override
-    public boolean actualizar(Venta e) {
+    public boolean actualizar(Venta e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -69,6 +71,7 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
             ps.setString(4, e.getEmpleado().getIdEmpleado());
             ps.setLong(5, e.getIdVenta());
             ps.executeUpdate();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -76,7 +79,7 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
     }
 
     @Override
-    public boolean eliminar(Venta e) {
+    public boolean eliminar(Venta e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -84,6 +87,7 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
                     + idVentaDAO + " = ?;");
             ps.setLong(1, e.getIdVenta());
             ps.execute();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -91,7 +95,7 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
     }
 
     @Override
-    public List<Venta> buscarTodos() {
+    public List<Venta> buscarTodos(Connection con) {
         ArrayList<Venta> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM venta;";
@@ -107,19 +111,19 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
 
                     ClienteDAO clienteDAO = new ClienteDAO();
                     EmpleadoDAO empleadoDAO = new EmpleadoDAO();
-                    Cliente cliente = clienteDAO.buscarPorId(idCliente);
-                    Empleado empleado = empleadoDAO.buscarPorId(idEmpleado);
+                    Cliente cliente = clienteDAO.buscarPorId(idCliente, con);
+                    Empleado empleado = empleadoDAO.buscarPorId(idEmpleado, con);
                     lista.add(new Venta(idVenta, cliente, empleado, fechaVenta, netoVenta));
                 }
             }
-
+            ps.close();
         } catch (SQLException ex) {
         }
         return lista;
     }
 
     @Override
-    public Venta buscarPorId(Long id) {
+    public Venta buscarPorId(Long id, Connection con) {
         Venta e = null;
         String statement
                 = "SELECT * FROM venta WHERE "
@@ -136,12 +140,12 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
             String fechaVenta = rs.getString(fechaVentaDAO);
             double netoVenta = rs.getDouble(netoVentaDAO);
 
-            ClienteDAO clienteDAO = new ClienteDAO(con);
-            EmpleadoDAO empleadoDAO = new EmpleadoDAO(con);
+            ClienteDAO clienteDAO = new ClienteDAO();
+            EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 
-            Cliente cliente = clienteDAO.buscarPorId(idCliente);
-            Empleado empleado = empleadoDAO.buscarPorId(idEmpleado);
-
+            Cliente cliente = clienteDAO.buscarPorId(idCliente, con);
+            Empleado empleado = empleadoDAO.buscarPorId(idEmpleado, con);
+            ps.close();
             e = new Venta(idVenta, cliente, empleado, fechaVenta, netoVenta);
         } catch (SQLException ex) {
         }

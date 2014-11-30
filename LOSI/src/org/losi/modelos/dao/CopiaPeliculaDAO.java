@@ -1,12 +1,11 @@
 package org.losi.modelos.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.losi.modelos.bo.CopiaPelicula;
 import org.losi.modelos.bo.Pelicula;
 
@@ -22,7 +21,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
     public final static String comentariosDAO = propiedades.getProperty("copia-comentarios");
 
     @Override
-    public boolean persistir(CopiaPelicula e) {
+    public boolean persistir(CopiaPelicula e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -44,6 +43,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             ps.setString(6, e.getComentarios());
             ps.setLong(7, e.getPelicula().getIdPelicula());
             ps.executeUpdate();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -51,7 +51,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
     }
 
     @Override
-    public boolean actualizar(CopiaPelicula e) {
+    public boolean actualizar(CopiaPelicula e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -72,8 +72,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             ps.setString(6, e.getComentarios());
             ps.setLong(7, e.getIdCopiaPelicula());
             ps.executeUpdate();
-            con.commit();
-            con.close();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -81,7 +80,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
     }
 
     @Override
-    public boolean eliminar(CopiaPelicula e) {
+    public boolean eliminar(CopiaPelicula e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -89,6 +88,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
                     + idCopiaPeliculaDAO + " = ?;");
             ps.setLong(1, e.getIdCopiaPelicula());
             ps.execute();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -96,7 +96,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
     }
 
     @Override
-    public List<CopiaPelicula> buscarTodos() {
+    public List<CopiaPelicula> buscarTodos(Connection con) {
         ArrayList<CopiaPelicula> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM " + nombreTabla + ";";
@@ -112,17 +112,18 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
                 String comentarios = rs.getString(comentariosDAO);
                 double precio = rs.getDouble(precioDAO);
                 long idPelicula = rs.getLong(PeliculaDAO.idPeliculaDAO);
-                PeliculaDAO peliculaDAO = new PeliculaDAO(con);
-                Pelicula pelicula = peliculaDAO.buscarPorId(idPelicula);
+                PeliculaDAO peliculaDAO = new PeliculaDAO();
+                Pelicula pelicula = peliculaDAO.buscarPorId(idPelicula, con);
                 lista.add(new CopiaPelicula(idCopiaPelicula, pelicula, codigo, formato, fechaAdquisicion, precio, estado, comentarios));
             }
+            ps.close();
         } catch (SQLException ex) {
         }
         return lista;
     }
 
     @Override
-    public CopiaPelicula buscarPorId(Long id) {
+    public CopiaPelicula buscarPorId(Long id, Connection con) {
         CopiaPelicula e = null;
         String statement
                 = "SELECT * FROM " + nombreTabla + " WHERE "
@@ -141,7 +142,8 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             double precio = rs.getLong(precioDAO);
             long idPelicula = rs.getLong(PeliculaDAO.idPeliculaDAO);
             PeliculaDAO peliculaDAO = new PeliculaDAO();
-            Pelicula pelicula = peliculaDAO.buscarPorId(idPelicula);
+            Pelicula pelicula = peliculaDAO.buscarPorId(idPelicula, con);
+            ps.close();
             e = new CopiaPelicula(idCopiaPelicula, pelicula, codigo, formato, fechaAdquisicion, precio, estado, comentarios);
         } catch (SQLException ex) {
         }

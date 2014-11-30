@@ -1,12 +1,9 @@
 package org.losi.controlador.acciones;
 
 import java.awt.Container;
-import org.losi.modelos.servicios.ServiciosLOSI;
 
 public abstract class Accion {
     
-    protected ServiciosLOSI servicios = new ServiciosLOSI();
-
     public static Accion getAccion(String tipo) {
         Accion accion = null;
         String paquete = Accion.class.getPackage().getName();

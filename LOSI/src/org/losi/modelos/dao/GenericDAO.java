@@ -12,7 +12,6 @@ public abstract class GenericDAO<E, P> {
 
     private static final Properties defaultProps = new Properties();
     protected static final Properties propiedades = new Properties(defaultProps);
-    protected Connection con;
 
     static {
         try {
@@ -28,29 +27,22 @@ public abstract class GenericDAO<E, P> {
         }
     }
 
-    public GenericDAO() {
-        con = DataBaseHelper.getConexion();
-    }
+    public abstract boolean persistir(E e, Connection con);
 
-    public GenericDAO(Connection con) {
-        this.con = con;
-    }
+    public abstract boolean actualizar(E e, Connection con);
 
-    public abstract boolean persistir(E e);
+    public abstract boolean eliminar(E e, Connection con);
 
-    public abstract boolean actualizar(E e);
+    public abstract List<E> buscarTodos(Connection con);
 
-    public abstract boolean eliminar(E e);
-
-    public abstract List<E> buscarTodos();
-
-    public abstract E buscarPorId(P id);
+    public abstract E buscarPorId(P id, Connection con);
 
     public boolean persistirCommit(E e) {
+        Connection con = DataBaseHelper.getConexion();
         boolean result = false;
         try {
             con.setAutoCommit(false);
-            result = persistir(e);
+            result = persistir(e, con);
             con.commit();
             con.close();
         } catch (SQLException ex) {
@@ -67,10 +59,11 @@ public abstract class GenericDAO<E, P> {
     }
 
     public boolean actualizarCommit(E e) {
+        Connection con = DataBaseHelper.getConexion();
         boolean result = false;
         try {
             con.setAutoCommit(false);
-            result = actualizar(e);
+            result = actualizar(e, con);
             con.commit();
             con.close();
         } catch (SQLException ex) {
@@ -87,10 +80,11 @@ public abstract class GenericDAO<E, P> {
     }
 
     public boolean eliminarCommit(E e) {
+        Connection con = DataBaseHelper.getConexion();
         boolean result = false;
         try {
             con.setAutoCommit(false);
-            result = eliminar(e);
+            result = eliminar(e, con);
             con.commit();
             con.close();
         } catch (SQLException ex) {
@@ -107,10 +101,11 @@ public abstract class GenericDAO<E, P> {
     }
 
     public List<E> buscarTodosCommit() {
+        Connection con = DataBaseHelper.getConexion();
         List<E> result = null;
         try {
             con.setAutoCommit(false);
-            result = buscarTodos();
+            result = buscarTodos(con);
             con.commit();
             con.close();
         } catch (SQLException ex) {
@@ -127,10 +122,11 @@ public abstract class GenericDAO<E, P> {
     }
 
     public E buscarPorIdCommit(P id) {
+        Connection con = DataBaseHelper.getConexion();
         E result = null;
         try {
             con.setAutoCommit(false);
-            result = buscarPorId(id);
+            result = buscarPorId(id, con);
             con.commit();
             con.close();
         } catch (SQLException ex) {

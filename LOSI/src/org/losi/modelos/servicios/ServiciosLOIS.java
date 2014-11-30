@@ -14,15 +14,22 @@ import org.losi.modelos.dao.GeneroDAO;
 import org.losi.modelos.dao.PeliculaDAO;
 import org.losi.modelos.dao.VentaDAO;
 
-public class ServiciosLOSI {
-private final PeliculaDAO peliculaDAO;
+public class ServiciosLOIS {
+
+    private static final ServiciosLOIS servicios = new ServiciosLOIS();
+
+    public static ServiciosLOIS getServicios(){
+        return servicios;
+    }
+    
+    private final PeliculaDAO peliculaDAO;
     private final GeneroDAO generoDAO;
     private final EmpleadoDAO empleadoDAO;
     private final ClienteDAO clienteDAO;
     private final CopiaPeliculaDAO copiaDAO;
     private final VentaDAO ventaDAO;
 
-    public ServiciosLOSI(){
+    public ServiciosLOIS() {
         peliculaDAO = new PeliculaDAO();
         generoDAO = new GeneroDAO();
         empleadoDAO = new EmpleadoDAO();
@@ -30,72 +37,72 @@ private final PeliculaDAO peliculaDAO;
         copiaDAO = new CopiaPeliculaDAO();
         ventaDAO = new VentaDAO();
     }
-    
-    public List<Pelicula> catalogoPeliculas(){
+
+    public List<Pelicula> catalogoPeliculas() {
         return peliculaDAO.buscarTodosCommit();
     }
-    
-    public List<Genero> catalogoGeneros(){
+
+    public List<Genero> catalogoGeneros() {
         return generoDAO.buscarTodosCommit();
     }
-    
-    public List<Empleado> catalogoEmpleados(){
+
+    public List<Empleado> catalogoEmpleados() {
         return empleadoDAO.buscarTodosCommit();
     }
-    
-    public List<Cliente> catalogoClientes(){
+
+    public List<Cliente> catalogoClientes() {
         return clienteDAO.buscarTodosCommit();
     }
-    
-    public List<CopiaPelicula> catalogoCopias(){
+
+    public List<CopiaPelicula> catalogoCopias() {
         return copiaDAO.buscarTodosCommit();
     }
-    
-        public void altaEmpleado(Empleado e){
+
+    public void altaEmpleado(Empleado e) {
         empleadoDAO.persistirCommit(e);
     }
-    
-    public void altaCliente(Cliente e){
+
+    public void altaCliente(Cliente e) {
         clienteDAO.persistirCommit(e);
     }
-    
-    public void altaGenero(Genero e){
+
+    public void altaGenero(Genero e) {
         generoDAO.persistirCommit(e);
     }
-    
-    public void altaPelicula(Pelicula e){
+
+    public void altaPelicula(Pelicula e) {
         peliculaDAO.persistirCommit(e);
     }
-    
-    public void altaCopiaPelicula(CopiaPelicula e){
+
+    public void altaCopiaPelicula(CopiaPelicula e) {
         copiaDAO.persistirCommit(e);
     }
-    
-    public void altaVenta(Venta e){
+
+    public void altaVenta(Venta e) {
         ventaDAO.persistirCommit(e);
     }
-    
-    public void actualizaEmpleado(Empleado e){
+
+    public void actualizaEmpleado(Empleado e) {
         empleadoDAO.actualizarCommit(e);
     }
-    
-    public void actualizaCliente(Cliente e){
+
+    public void actualizaCliente(Cliente e) {
         clienteDAO.actualizarCommit(e);
     }
-    
-    public void actualizaGenero(Genero e){
+
+    public void actualizaGenero(Genero e) {
         generoDAO.actualizarCommit(e);
     }
-    
-    public void actualizaPelicula(Pelicula e){
+
+    public void actualizaPelicula(Pelicula e) {
         peliculaDAO.actualizarCommit(e);
     }
-    
-    public void actualizaCopiaPelicula(CopiaPelicula e){
+
+    public void actualizaCopiaPelicula(CopiaPelicula e) {
         copiaDAO.actualizarCommit(e);
     }
-    
-    public void actualizaVenta(Venta e){
+
+    public void actualizaVenta(Venta e) {
         ventaDAO.actualizarCommit(e);
     }
 }

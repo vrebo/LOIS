@@ -3,6 +3,8 @@ package org.losi.modelos.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.losi.modelos.bo.Conexion;
 
 public class DataBaseHelper {
@@ -23,6 +25,7 @@ public class DataBaseHelper {
                     conexion.getUser(), conexion.getPassword());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
             System.out.println("Problema con la conexion" + ex.getMessage());
+            ex.printStackTrace();
         }
         return connection;
     }
@@ -36,9 +39,19 @@ public class DataBaseHelper {
                     + conexion.getPort() + "/" + conexion.getBaseDatos(),
                     conexion.getUser(), conexion.getPassword());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
-            
         }
-        return (connection != null);
+        boolean result;
+        if(connection != null){
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(DataBaseHelper.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            result = true;
+        }else{
+            result = false;
+        }
+        return result;
     }
     
     public static void setConexion(Conexion con){

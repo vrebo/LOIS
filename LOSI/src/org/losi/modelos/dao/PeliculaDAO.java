@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.losi.modelos.bo.Genero;
 import org.losi.modelos.bo.Pelicula;
 
@@ -22,15 +20,8 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
     public final static String clasificacionDAO = propiedades.getProperty("pelicula-clasificacion");
     public final static String tituloDAO = propiedades.getProperty("pelicula-titulo");
 
-    public PeliculaDAO() {
-    }
-
-    public PeliculaDAO(Connection con) {
-        super(con);
-    }
-
     @Override
-    public boolean persistir(Pelicula e) {
+    public boolean persistir(Pelicula e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -52,6 +43,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             ps.setString(6, e.getClasificacion());
             ps.setLong(7, e.getGenero().getIdGenero());
             ps.executeUpdate();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -59,7 +51,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
     }
 
     @Override
-    public boolean actualizar(Pelicula e) {
+    public boolean actualizar(Pelicula e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -82,6 +74,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             ps.setLong(7, e.getGenero().getIdGenero());
             ps.setLong(8, e.getIdPelicula());
             ps.executeUpdate();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -89,7 +82,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
     }
 
     @Override
-    public boolean eliminar(Pelicula e) {
+    public boolean eliminar(Pelicula e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -97,6 +90,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
                     + idPeliculaDAO + " = ?;");
             ps.setLong(1, e.getIdPelicula());
             ps.execute();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -104,7 +98,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
     }
 
     @Override
-    public List<Pelicula> buscarTodos() {
+    public List<Pelicula> buscarTodos(Connection con) {
         ArrayList<Pelicula> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM " + nombreTabla + ";";
@@ -120,18 +114,19 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
                     String clasificacion = rs.getString(clasificacionDAO);
                     String duracion = rs.getString(duracionDAO);
                     long idGenero = rs.getLong(GeneroDAO.idGeneroDAO);
-                    GeneroDAO generoDAO = new GeneroDAO(con);
-                    Genero genero = generoDAO.buscarPorId(idGenero);
+                    GeneroDAO generoDAO = new GeneroDAO();
+                    Genero genero = generoDAO.buscarPorId(idGenero, con);
                     lista.add(new Pelicula(idPelicula, genero, "portada", estelares, titulo, anioEstreno, director, clasificacion, duracion));
                 }
             }
+            ps.close();
         } catch (SQLException ex) {
         }
         return lista;
     }
 
     @Override
-    public Pelicula buscarPorId(Long id) {
+    public Pelicula buscarPorId(Long id, Connection con) {
         Pelicula e = null;
         String statement
                 = "SELECT * FROM " + nombreTabla + " WHERE "
@@ -149,8 +144,9 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             String clasificacion = rs.getString(clasificacionDAO);
             String duracion = rs.getString(duracionDAO);
             long idGenero = rs.getLong(GeneroDAO.idGeneroDAO);
-            GeneroDAO generoDAO = new GeneroDAO(con);
-            Genero genero = generoDAO.buscarPorId(idGenero);
+            GeneroDAO generoDAO = new GeneroDAO();
+            Genero genero = generoDAO.buscarPorId(idGenero, con);
+            ps.close();
             e = new Pelicula(idPelicula, genero, "portada", estelares, titulo, anioEstreno, director, clasificacion, duracion);
         } catch (SQLException ex) {
         }

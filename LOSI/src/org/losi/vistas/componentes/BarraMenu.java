@@ -66,14 +66,14 @@ public class BarraMenu extends JMenuBar {
     private void addEventos(Container contenedor) {
         for (JMenuItem jMenuItem : itemsMenuCatalogo) {
             jMenuItem.addActionListener((ActionEvent e) -> {
-                String tipo = ((JComponent) e.getSource()).getName();
+                String tipo = ((Container) e.getSource()).getName();
                 Accion accion = Accion.getAccion(tipo);
                 accion.ejecutar(contenedor);
             });
         }
         for (JMenuItem jMenuItem : itemsMenuSesion) {
             jMenuItem.addActionListener((ActionEvent e) -> {
-                String tipo = ((JComponent) e.getSource()).getName();
+                String tipo = ((Container) e.getSource()).getName();
                 Accion accion = Accion.getAccion(tipo);
                 accion.ejecutar(contenedor);
             });

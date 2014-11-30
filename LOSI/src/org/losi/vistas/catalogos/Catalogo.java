@@ -3,9 +3,6 @@ package org.losi.vistas.catalogos;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyVetoException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
@@ -15,7 +12,6 @@ import javax.swing.JScrollPane;
 import javax.swing.table.TableModel;
 import org.losi.controlador.acciones.Accion;
 import org.jdesktop.swingx.JXTable;
-import org.losi.controlador.acciones.MuestraCatalogoAccion;
 
 public class Catalogo extends JInternalFrame {
 

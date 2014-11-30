@@ -21,15 +21,9 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
     public final static String fechaRegistroDAO = propiedades.getProperty("empleado-fecharegistro");
     public final static String estadoDAO = propiedades.getProperty("empleado-estado");
     public final static String puestoDAO = propiedades.getProperty("empleado-puesto");
-
-    public EmpleadoDAO(){}
-    
-    public EmpleadoDAO(Connection con){
-        this.con = con;
-    }
     
     @Override
-    public boolean persistir(Empleado e){
+    public boolean persistir(Empleado e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -56,6 +50,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
             ps.setString(8, e.getEstado());
             ps.setString(9, e.getPuesto());
             ps.execute();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -63,7 +58,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
     }
 
     @Override
-    public boolean actualizar(Empleado e){
+    public boolean actualizar(Empleado e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -90,6 +85,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
             ps.setString(9, e.getPuesto());
             ps.setString(10, e.getIdEmpleado());
             ps.executeUpdate();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -97,7 +93,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
     }
 
     @Override
-    public boolean eliminar(Empleado e){
+    public boolean eliminar(Empleado e, Connection con) {
         boolean result = false;
         try {
             PreparedStatement ps = con.prepareStatement(
@@ -106,6 +102,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
                             + " = ?;");
             ps.setString(1, e.getIdEmpleado());
             ps.execute();
+            ps.close();
             result = true;
         } catch (SQLException ex) {
         }
@@ -113,7 +110,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
     }
 
     @Override
-    public List<Empleado> buscarTodos(){
+    public List<Empleado> buscarTodos(Connection con) {
         ArrayList<Empleado> lista = new ArrayList<>();
         String statement
                 = "SELECT * FROM " + nombreTabla + ";";
@@ -133,13 +130,14 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
                 String puesto = rs.getString(10);
                 lista.add(new Empleado(idEmpleado, horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro));
             }
+            ps.close();
         } catch (SQLException ex) {
         }
         return lista;
     }
 
     @Override
-    public Empleado buscarPorId(String id){
+    public Empleado buscarPorId(String id, Connection con) {
         Empleado e = null;
         String statement
                 = "SELECT * FROM " + nombreTabla + " WHERE "
@@ -160,6 +158,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
             String fechaRegistro = rs.getString(8);
             String estado = rs.getString(9);
             String puesto = rs.getString(10);
+            ps.close();
             e = new Empleado(idEmpleado, horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro);
         } catch (SQLException ex) {
         }

@@ -12,10 +12,14 @@ public abstract class MyTableModel<E> extends AbstractTableModel {
     public List<E> getData() {
         return data;
     }
+    
+    public void actualizaDatos(){
+        fireTableDataChanged();
+    }
 
     public void setData(List<E> data) {
         this.data = data;
-        fireTableDataChanged();
+        actualizaDatos();
     }
 
     @Override
@@ -65,19 +69,13 @@ public abstract class MyTableModel<E> extends AbstractTableModel {
      */
     @Override
     public void setValueAt(Object value, int row, int col) {
-//        if (DEBUG) {
-//            System.out.println("Setting value at " + row + "," + col
-//                    + " to " + value
-//                    + " (an instance of "
-//                    + value.getClass() + ")");
-//        }
-//
-//        data[row][col] = value;
-//        fireTableCellUpdated(row, col);
-//
-//        if (DEBUG) {
-//            System.out.println("New value of data:");
-//            printDebugData();
-//        }
+        data.add((E)value);
+        fireTableDataChanged();
+    }
+    
+    public void remove(int row){
+        data.remove(row);
+        fireTableRowsDeleted(0, data.size());
+        fireTableDataChanged();
     }
 }

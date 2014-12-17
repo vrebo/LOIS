@@ -9,21 +9,19 @@ public class CopiaPelicula {
     private String fechaAdquisicion;
     private double precio;
     private String estado;
-    private String comentarios;
 
-    public CopiaPelicula(long idCopiaPelicula, Pelicula pelicula, String codigo, String formato, String fechaAdquisicion, double precio, String estado, String comentarios) {
-        this(pelicula, codigo, formato, fechaAdquisicion, precio, estado, comentarios);
+    public CopiaPelicula(long idCopiaPelicula, Pelicula pelicula, String codigo, String formato, String fechaAdquisicion, double precio, String estado) {
+        this(pelicula, codigo, formato, fechaAdquisicion, precio, estado);
         this.idCopiaPelicula = idCopiaPelicula;
     }
 
-    public CopiaPelicula(Pelicula pelicula, String codigo, String formato, String fechaAdquisicion, double precio, String estado, String comentarios) {
+    public CopiaPelicula(Pelicula pelicula, String codigo, String formato, String fechaAdquisicion, double precio, String estado) {
         this.pelicula = pelicula;
         this.codigo = codigo;
         this.formato = formato;
         this.fechaAdquisicion = fechaAdquisicion;
         this.precio = precio;
         this.estado = estado;
-        this.comentarios = comentarios;
     }
 
     public String getCodigo() {
@@ -32,14 +30,6 @@ public class CopiaPelicula {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
-    }
-    
-    public String getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(String comentarios) {
-        this.comentarios = comentarios;
     }
 
     public long getIdCopiaPelicula() {
@@ -88,5 +78,9 @@ public class CopiaPelicula {
 
     public void setPrecio(double precio) {
         this.precio = precio;
+    }
+    
+    public boolean isAvailable(){
+        return estado.equals("EN-STOCK");
     }
 }

@@ -69,5 +69,8 @@ public abstract class Persona {
         this.fechaRegistro = fechaRegistro;
     }
     
+    public String getNombreCompleto(){
+        return nombre + " " + apellidoPaterno + " " + apellidoMaterno;
+    }
     
 }

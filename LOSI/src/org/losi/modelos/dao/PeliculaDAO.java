@@ -1,11 +1,19 @@
 package org.losi.modelos.dao;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import org.losi.modelos.bo.Genero;
 import org.losi.modelos.bo.Pelicula;
 
@@ -24,28 +32,49 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
     public boolean persistir(Pelicula e, Connection con) {
         boolean result = false;
         try {
+            String statement = "SELECT MAX("
+                    + idPeliculaDAO
+                    + ") FROM "
+                    + nombreTabla
+                    + ";";
+            long id;
+            try (ResultSet rs = con.createStatement().executeQuery(statement)) {
+                rs.next();
+                id = rs.getLong(1);
+            }
+            statement
+                    = "SELECT setval('pelicula_pelicula_id_seq', " + id + ");";
+            con.createStatement().execute(statement);
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO " + nombreTabla + " ("
                     + tituloDAO + ", "
-                    + anioEstrenoDAO + ", "
                     + directorDAO + ", "
                     + estelaresDAO + ", "
+                    + anioEstrenoDAO + ", "
                     + duracionDAO + ", "
                     + clasificacionDAO + ", "
-                    + GeneroDAO.idGeneroDAO + " "
-                    + ") VALUES (?, ?::date, ?, ?, ?::time, ?::pelicula_clasificacion, ?);");
+                    + GeneroDAO.idGeneroDAO + ", "
+                    + "pelicula_portada "
+                    + ") VALUES (?, ?, ?, ?::interval, ?::time, ?::pelicula_clasificacion, ?, ?);");
 
             ps.setString(1, e.getTitulo());
-            ps.setString(2, e.getAnioEstreno());
-            ps.setString(3, e.getDirector());
-            ps.setString(4, e.getEstelares());
+            ps.setString(2, e.getDirector());
+            ps.setString(3, e.getEstelares());
+            int year = Integer.parseInt(e.getAnioEstreno());
+            ps.setString(4, "'" + e.getAnioEstreno() + " years'");
             ps.setString(5, e.getDuracion());
             ps.setString(6, e.getClasificacion());
             ps.setLong(7, e.getGenero().getIdGenero());
+            File portada = e.getPortada();
+            FileInputStream fis = new FileInputStream(portada);
+            ps.setBinaryStream(8, fis, (int) portada.length());
             ps.executeUpdate();
             ps.close();
             result = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PeliculaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
@@ -57,7 +86,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             PreparedStatement ps = con.prepareStatement(
                     "UPDATE " + nombreTabla + " SET "
                     + tituloDAO + " = ?, "
-                    + anioEstrenoDAO + " = ?::date, "
+                    + anioEstrenoDAO + " = ?::interval, "
                     + directorDAO + " = ?, "
                     + estelaresDAO + " = ?, "
                     + duracionDAO + " = ?::time, "
@@ -66,7 +95,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
                     + "WHERE "
                     + idPeliculaDAO + " = ?;");
             ps.setString(1, e.getTitulo());
-            ps.setString(2, e.getAnioEstreno());
+            ps.setString(2, "'" + e.getAnioEstreno() + " years'");
             ps.setString(3, e.getDirector());
             ps.setString(4, e.getEstelares());
             ps.setString(5, e.getDuracion());
@@ -116,11 +145,19 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
                     long idGenero = rs.getLong(GeneroDAO.idGeneroDAO);
                     GeneroDAO generoDAO = new GeneroDAO();
                     Genero genero = generoDAO.buscarPorId(idGenero, con);
-                    lista.add(new Pelicula(idPelicula, genero, "portada", estelares, titulo, anioEstreno, director, clasificacion, duracion));
+                    byte[] bytes = rs.getBytes("pelicula_portada");
+                    try {
+                        Image portadaImg = new ImageIcon(bytes).getImage();
+                        lista.add(new Pelicula(idPelicula, genero, portadaImg, estelares, titulo, anioEstreno, director, clasificacion, duracion));
+                    } catch (NullPointerException ex) {
+                        lista.add(new Pelicula(idPelicula, genero, new ImageIcon().getImage(), estelares, titulo, anioEstreno, director, clasificacion, duracion));
+                    }
+
                 }
             }
             ps.close();
         } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return lista;
     }
@@ -146,9 +183,16 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             long idGenero = rs.getLong(GeneroDAO.idGeneroDAO);
             GeneroDAO generoDAO = new GeneroDAO();
             Genero genero = generoDAO.buscarPorId(idGenero, con);
+            byte[] bytes = rs.getBytes("pelicula_portada");
+            try {
+                Image portadaImg = new ImageIcon(bytes).getImage();
+                e = new Pelicula(idPelicula, genero, portadaImg, estelares, titulo, anioEstreno, director, clasificacion, duracion);
+            } catch (NullPointerException ex) {
+                e = new Pelicula(idPelicula, genero, new ImageIcon().getImage(), estelares, titulo, anioEstreno, director, clasificacion, duracion);
+            }
             ps.close();
-            e = new Pelicula(idPelicula, genero, "portada", estelares, titulo, anioEstreno, director, clasificacion, duracion);
         } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return e;
     }

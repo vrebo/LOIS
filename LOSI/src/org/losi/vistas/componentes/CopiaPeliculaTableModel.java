@@ -12,8 +12,7 @@ public class CopiaPeliculaTableModel extends MyTableModel<CopiaPelicula> {
             "Fecha de adquisición",
             "Precio",
             "Estado",
-            "Formato",
-            "Comentarios"
+            "Formato"
         };
     }
 
@@ -32,10 +31,8 @@ public class CopiaPeliculaTableModel extends MyTableModel<CopiaPelicula> {
                 return data.get(rowIndex).getPrecio();
             case 5:
                 return data.get(rowIndex).getEstado();
-            case 6:
-                return data.get(rowIndex).getFormato();
             default:
-                return data.get(rowIndex).getComentarios();
+                return data.get(rowIndex).getFormato();         
 
         }
     }

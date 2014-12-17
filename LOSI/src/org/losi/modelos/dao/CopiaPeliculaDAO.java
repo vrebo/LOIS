@@ -18,7 +18,6 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
     public final static String fechaAdquisicionDAO = propiedades.getProperty("copia-fecha-adquisicion");
     public final static String precioDAO = propiedades.getProperty("copia-precio");
     public final static String estadoDAO = propiedades.getProperty("copia-estado");
-    public final static String comentariosDAO = propiedades.getProperty("copia-comentarios");
 
     @Override
     public boolean persistir(CopiaPelicula e, Connection con) {
@@ -31,7 +30,6 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
                     + fechaAdquisicionDAO + ", "
                     + precioDAO + ", "
                     + estadoDAO + ", "
-                    + comentariosDAO + ", "
                     + PeliculaDAO.idPeliculaDAO + " "
                     + ") VALUES (?, ?::copia_formato, ?::date, ?, ?::copia_estado, ?, ?);");
 
@@ -40,8 +38,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             ps.setString(3, e.getFechaAdquisicion());
             ps.setDouble(4, e.getPrecio());
             ps.setString(5, e.getEstado());
-            ps.setString(6, e.getComentarios());
-            ps.setLong(7, e.getPelicula().getIdPelicula());
+            ps.setLong(6, e.getPelicula().getIdPelicula());
             ps.executeUpdate();
             ps.close();
             result = true;
@@ -60,8 +57,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
                     + formatoDAO + " = ?::copia_formato, "
                     + fechaAdquisicionDAO + " = ?::date, "
                     + precioDAO + " = ?, "
-                    + estadoDAO + " = ?::copia_estado, "
-                    + comentariosDAO + " = ? "
+                    + estadoDAO + " = ?::copia_estado "
                     + " WHERE "
                     + idCopiaPeliculaDAO + " = ? ;");
             ps.setString(1, e.getCodigo());
@@ -69,8 +65,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             ps.setString(3, e.getFechaAdquisicion());
             ps.setDouble(4, e.getPrecio());
             ps.setString(5, e.getEstado());
-            ps.setString(6, e.getComentarios());
-            ps.setLong(7, e.getIdCopiaPelicula());
+            ps.setLong(6, e.getIdCopiaPelicula());
             ps.executeUpdate();
             ps.close();
             result = true;
@@ -109,15 +104,15 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
                 String fechaAdquisicion = rs.getString(fechaAdquisicionDAO);
                 String codigo = rs.getString(codigoDAO);
                 String estado = rs.getString(estadoDAO);
-                String comentarios = rs.getString(comentariosDAO);
                 double precio = rs.getDouble(precioDAO);
                 long idPelicula = rs.getLong(PeliculaDAO.idPeliculaDAO);
                 PeliculaDAO peliculaDAO = new PeliculaDAO();
                 Pelicula pelicula = peliculaDAO.buscarPorId(idPelicula, con);
-                lista.add(new CopiaPelicula(idCopiaPelicula, pelicula, codigo, formato, fechaAdquisicion, precio, estado, comentarios));
+                lista.add(new CopiaPelicula(idCopiaPelicula, pelicula, codigo, formato, fechaAdquisicion, precio, estado));
             }
             ps.close();
         } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return lista;
     }
@@ -138,13 +133,12 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
             String fechaAdquisicion = rs.getString(fechaAdquisicionDAO);
             String codigo = rs.getString(codigoDAO);
             String estado = rs.getString(estadoDAO);
-            String comentarios = rs.getString(comentariosDAO);
             double precio = rs.getLong(precioDAO);
             long idPelicula = rs.getLong(PeliculaDAO.idPeliculaDAO);
             PeliculaDAO peliculaDAO = new PeliculaDAO();
             Pelicula pelicula = peliculaDAO.buscarPorId(idPelicula, con);
             ps.close();
-            e = new CopiaPelicula(idCopiaPelicula, pelicula, codigo, formato, fechaAdquisicion, precio, estado, comentarios);
+            e = new CopiaPelicula(idCopiaPelicula, pelicula, codigo, formato, fechaAdquisicion, precio, estado);
         } catch (SQLException ex) {
         }
         return e;

@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.losi.modelos.bo.Genero;
+import static org.losi.modelos.dao.PeliculaDAO.idPeliculaDAO;
+import static org.losi.modelos.dao.PeliculaDAO.nombreTabla;
 
 public class GeneroDAO extends GenericDAO<Genero, Long> {
 
@@ -19,6 +21,19 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
     public boolean persistir(Genero e, Connection con) {
         boolean result = false;
         try {
+            String statement = "SELECT MAX("
+                    + idGeneroDAO
+                    + ") FROM "
+                    + nombreTabla
+                    + ";";
+            long id;
+            try (ResultSet rs = con.createStatement().executeQuery(statement)) {
+                rs.next();
+                id = rs.getLong(1);
+            }
+            statement
+                    = "SELECT setval('genero_genero_id_seq', " + id + ");";
+            con.createStatement().execute(statement);
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO " + nombreTabla + " ("
                     + nombreDAO + ", "
@@ -30,6 +45,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
             ps.close();
             result = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return result;
     }

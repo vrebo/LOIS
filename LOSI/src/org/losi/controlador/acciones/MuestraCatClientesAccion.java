@@ -9,7 +9,8 @@ public class MuestraCatClientesAccion extends Accion{
     @Override
     public void tarea(Container contenedor, Object... args) {
         Catalogo catalogo = ((VistaPrincipal)contenedor).getClienteCatalogo();
-        Accion.getAccion("MuestraCatalogo").ejecutar(contenedor, catalogo);
+        Accion.getAccion("MuestraInternalFrame").ejecutar(contenedor, catalogo);
+        Accion.getAccion("ActualizaCatCliente").ejecutar(catalogo);
     }
     
 }

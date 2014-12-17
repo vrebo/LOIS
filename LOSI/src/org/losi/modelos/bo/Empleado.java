@@ -7,15 +7,16 @@ public class Empleado extends Persona {
     private String horaSalida;
     private String estado;
     private String puesto;
+    private double sueldo;
 
     public Empleado(){}
     
-    public Empleado(String idEmpleado, String horaEntrada, String horaSalida, String estado, String puesto, String nombre, String apellidoPaterno, String apellidoMaterno, String fechaNacimiento, String fechaRegistro) {
-        this(horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro);
+    public Empleado(String idEmpleado, String horaEntrada, String horaSalida, String estado, String puesto, String nombre, String apellidoPaterno, String apellidoMaterno, String fechaNacimiento, String fechaRegistro, double sueldo) {
+        this(horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro, sueldo);
         this.idEmpleado = idEmpleado;
     }
 
-    public Empleado(String horaEntrada, String horaSalida, String estado, String puesto, String nombre, String apellidoPaterno, String apellidoMaterno, String fechaNacimiento, String fechaRegistro) {
+    public Empleado(String horaEntrada, String horaSalida, String estado, String puesto, String nombre, String apellidoPaterno, String apellidoMaterno, String fechaNacimiento, String fechaRegistro, double sueldo) {
         super(nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento);
         this.estado = estado;
         this.fechaRegistro = fechaRegistro;
@@ -64,6 +65,12 @@ public class Empleado extends Persona {
         this.puesto = puesto;
     }
 
-    
+    public double getSueldo() {
+        return sueldo;
+    }
+
+    public void setSueldo(double sueldo) {
+        this.sueldo = sueldo;
+    }
     
 }

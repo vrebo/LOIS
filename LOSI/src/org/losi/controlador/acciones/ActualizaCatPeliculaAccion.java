@@ -14,7 +14,7 @@ public class ActualizaCatPeliculaAccion extends Accion {
             Catalogo catalogo = (Catalogo) contenedor;
             List<Pelicula> lista = ServiciosLOIS.getServicios().catalogoPeliculas();
             PeliculaTableModel modelo = (PeliculaTableModel) catalogo.getjXTable().getModel();
-            modelo.setData(lista);
+            modelo.setData(lista);           
     }
 
 }

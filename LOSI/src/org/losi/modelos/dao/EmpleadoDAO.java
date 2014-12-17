@@ -37,9 +37,10 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
                             + fechaNacimientoDAO + ", "
                             + fechaRegistroDAO + ", "
                             + estadoDAO + ", "
-                            + puestoDAO + " )"
+                            + puestoDAO + ","
+                            + "empleado_sueldo )"
                             + " VALUES (?, ?, ?, ?, ?::time, ?::time, ?::timestamp, "
-                            + "now(), ?::empleado_estado, ?::empleado_puesto);");
+                            + "now(), ?::empleado_estado, ?::empleado_puesto, ?);");
             ps.setString(1, e.getIdEmpleado());
             ps.setString(2, e.getNombre());
             ps.setString(3, e.getApellidoPaterno());
@@ -49,10 +50,12 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
             ps.setString(7, e.getFechaNacimiento());
             ps.setString(8, e.getEstado());
             ps.setString(9, e.getPuesto());
+            ps.setDouble(10, 500);
             ps.execute();
             ps.close();
             result = true;
         } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return result;
     }
@@ -128,7 +131,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
                 String fechaRegistro = rs.getString(8);
                 String estado = rs.getString(9);
                 String puesto = rs.getString(10);
-                lista.add(new Empleado(idEmpleado, horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro));
+                lista.add(new Empleado(idEmpleado, horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro,500));
             }
             ps.close();
         } catch (SQLException ex) {
@@ -159,7 +162,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
             String estado = rs.getString(9);
             String puesto = rs.getString(10);
             ps.close();
-            e = new Empleado(idEmpleado, horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro);
+            e = new Empleado(idEmpleado, horaEntrada, horaSalida, estado, puesto, nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, fechaRegistro,500);
         } catch (SQLException ex) {
         }
         return e;

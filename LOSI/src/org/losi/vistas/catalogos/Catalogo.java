@@ -1,98 +1,66 @@
 package org.losi.vistas.catalogos;
 
-import java.awt.Container;
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JScrollPane;
+import javax.swing.JToolBar;
 import javax.swing.table.TableModel;
-import org.losi.controlador.acciones.Accion;
 import org.jdesktop.swingx.JXTable;
+import org.losi.controlador.acciones.Accion;
+import org.losi.vistas.componentes.MyInternalFrame;
 
-public class Catalogo extends JInternalFrame {
-
+public class Catalogo extends MyInternalFrame {
+    
     protected JXTable jXTable;
     protected JScrollPane jScrollPane;
-    private BarraMenu menu;
     private final TableModel tableModel;
+    private JToolBar toolBar;
+    private JButton actualizar;
     protected final String accion;
-
+    
     public Catalogo(String titulo, String accion, TableModel tableModel) {
         this.setTitle(titulo);
         this.setName(accion);
         this.accion = accion;
         this.tableModel = tableModel;
         addComponentes();
-        addEventos(this);
+        addEventos();
     }
-
+    
     private void addComponentes() {
+        setLayout(new BorderLayout());
+        toolBar = new JToolBar();
+        actualizar = new JButton("Actualizar");
+        actualizar.setActionCommand(accion);
+        toolBar.add(actualizar);
+        
+        ImageIcon icon = new ImageIcon(getClass().getResource("/imagenes/reload-icon.png"));
+        actualizar.setIcon(icon);
+        add(toolBar, BorderLayout.NORTH);
+        
         jScrollPane = new JScrollPane();
         jXTable = new JXTable(tableModel);
-        menu = new BarraMenu();
-
-        setClosable(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-        setIconifiable(true);
-        setMaximizable(true);
-        setResizable(true);
-        setJMenuBar(menu);
-        add(jScrollPane);
-
+        
+        add(jScrollPane, BorderLayout.CENTER);
+        
         jXTable.setColumnControlVisible(true);
         jXTable.setShowGrid(false);
         jScrollPane.setViewportView(jXTable);
         jXTable.packTable(5);
+        
         pack();
     }
-
-    private void addEventos(JComponent componenete) {
-        menu.addEventos(componenete);
+    
+    private void addEventos() {
+        actualizar.addActionListener((ActionEvent e) -> {
+            Accion.getAccion(e.getActionCommand()).ejecutar(this);
+        });
     }
-
-    @Override
-    public void show() {
-        Dimension deskopSize = getDesktopPane().getSize();
-        Dimension catalogoSize = getSize();
-        int x = deskopSize.width / 2 - catalogoSize.width / 2;
-        int y = deskopSize.height / 2 - catalogoSize.height / 2;
-        setLocation(x, y);
-        super.show();
-        Accion.getAccion(accion).ejecutar(this);
-    }
-
+    
     public JXTable getjXTable() {
         return jXTable;
     }
-
-    class BarraMenu extends JMenuBar {
-
-        private JMenu jMenuOpciones;
-        private JMenuItem jMenuItemActualizar;
-
-        public BarraMenu() {
-            addComponentes();
-        }
-
-        private void addComponentes() {
-            jMenuOpciones = new JMenu("Opciones");
-            jMenuItemActualizar = new JMenuItem("Actualizar");
-            jMenuItemActualizar.setName(accion);
-            jMenuOpciones.add(jMenuItemActualizar);
-            add(jMenuOpciones);
-        }
-
-        public void addEventos(Container contenedor) {
-            jMenuItemActualizar.addActionListener((ActionEvent e) -> {
-                String tipo = ((Container) e.getSource()).getName();
-                Accion accion = Accion.getAccion(tipo);
-                accion.ejecutar(contenedor);
-            });
-        }
-    }
-
+    
 }

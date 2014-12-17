@@ -71,9 +71,10 @@ public class Venta {
     }
 
     public void calculaNetoVenta() {
-        for (CopiaPelicula copiaPelicula : detalleVenta) {
+        netoVenta = 0;
+        detalleVenta.stream().forEach((copiaPelicula) -> {
             netoVenta += copiaPelicula.getPrecio();
-        }
+        });
     }
 
     public void addCopiaPelicula(CopiaPelicula copia) {

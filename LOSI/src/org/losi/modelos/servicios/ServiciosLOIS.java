@@ -57,29 +57,33 @@ public class ServiciosLOIS {
     public List<CopiaPelicula> catalogoCopias() {
         return copiaDAO.buscarTodosCommit();
     }
-
-    public void altaEmpleado(Empleado e) {
-        empleadoDAO.persistirCommit(e);
+    
+    public List<Venta> catalogoVentas() {
+        return ventaDAO.buscarTodosCommit();
     }
 
-    public void altaCliente(Cliente e) {
-        clienteDAO.persistirCommit(e);
+    public boolean altaEmpleado(Empleado e) {
+        return empleadoDAO.persistirCommit(e);
     }
 
-    public void altaGenero(Genero e) {
-        generoDAO.persistirCommit(e);
+    public boolean altaCliente(Cliente e) {
+        return clienteDAO.persistirCommit(e);
     }
 
-    public void altaPelicula(Pelicula e) {
-        peliculaDAO.persistirCommit(e);
+    public boolean altaGenero(Genero e) {
+        return generoDAO.persistirCommit(e);
     }
 
-    public void altaCopiaPelicula(CopiaPelicula e) {
-        copiaDAO.persistirCommit(e);
+    public boolean altaPelicula(Pelicula e) {
+        return peliculaDAO.persistirCommit(e);
     }
 
-    public void altaVenta(Venta e) {
-        ventaDAO.persistirCommit(e);
+    public boolean altaCopiaPelicula(CopiaPelicula e) {
+        return copiaDAO.persistirCommit(e);
+    }
+
+    public boolean altaVenta(Venta e) {
+        return ventaDAO.persistirCommit(e);
     }
 
     public void actualizaEmpleado(Empleado e) {
@@ -104,5 +108,13 @@ public class ServiciosLOIS {
 
     public void actualizaVenta(Venta e) {
         ventaDAO.actualizarCommit(e);
+    }
+    
+    public Cliente buscaClientePorID(String id){
+        return clienteDAO.buscarPorIdCommit(id);
+    }
+    
+    public CopiaPelicula buscaCopiaPorID(Long id){
+        return copiaDAO.buscarPorIdCommit(id);
     }
 }

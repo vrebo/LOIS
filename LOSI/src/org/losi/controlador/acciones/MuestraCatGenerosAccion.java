@@ -9,7 +9,8 @@ public class MuestraCatGenerosAccion extends Accion {
     @Override
     public void tarea(Container contenedor, Object... args) {
         Catalogo catalogo = ((VistaPrincipal) contenedor).getGeneroCatalogo();
-        Accion.getAccion("MuestraCatalogo").ejecutar(contenedor, catalogo);
+        Accion.getAccion("MuestraInternalFrame").ejecutar(contenedor, catalogo);
+        Accion.getAccion("ActualizaCatGenero").ejecutar(catalogo);
     }
 
 }

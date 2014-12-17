@@ -1,4 +1,3 @@
-
 package org.losi;
 
 import java.util.List;
@@ -6,7 +5,6 @@ import org.losi.modelos.bo.Conexion;
 import org.losi.modelos.bo.Pelicula;
 import org.losi.modelos.dao.DataBaseHelper;
 import org.losi.modelos.servicios.ServiciosLOIS;
-
 
 public class LOSI {
 

@@ -22,7 +22,22 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
     public boolean persistir(Venta e, Connection con) {
         boolean result = false;
         try {
-            String statement = "INSERT INTO " + nombreTabla + " ("
+            String statement = "SELECT MAX("
+                    + idVentaDAO
+                    + ") FROM "
+                    + nombreTabla
+                    + ";";
+            long id;
+            try (ResultSet rs = con.createStatement().executeQuery(statement)) {
+                rs.next();
+                id = rs.getLong(1);
+            }
+            statement
+                    = "SELECT setval('venta_venta_id_seq', "
+                    + id
+                    + ");";
+            con.createStatement().execute(statement);
+            statement = "INSERT INTO " + nombreTabla + " ("
                     + fechaVentaDAO + ","
                     + netoVentaDAO + ", "
                     + ClienteDAO.idClienteDAO + ","
@@ -36,19 +51,23 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
             ps.setString(3, e.getCliente().getIdCliente());
             ps.setString(4, e.getEmpleado().getIdEmpleado());
             ps.execute();
+            statement
+                    = "SELECT setval('detalle_venta_detallevta_id_seq', (SELECT MAX(detallevta_id) FROM detalle_venta));";
+            con.createStatement().execute(statement);
             statement = "INSERT INTO detalle_venta ("
                     + idVentaDAO + ", "
                     + CopiaPeliculaDAO.idCopiaPeliculaDAO
                     + ") VALUES (?, ?);";
             for (CopiaPelicula copia : e.getDetalleVenta()) {
                 ps = con.prepareStatement(statement);
-                ps.setLong(1, e.getIdVenta());
+                ps.setLong(1, id);
                 ps.setLong(2, copia.getIdCopiaPelicula());
                 ps.execute();
             }
             ps.close();
             result = true;
         } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
         return result;
     }

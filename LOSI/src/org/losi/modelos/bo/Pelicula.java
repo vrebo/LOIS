@@ -1,12 +1,14 @@
 package org.losi.modelos.bo;
 
+import java.awt.Image;
 import java.io.File;
 
 public class Pelicula {
-    
+
     private long idPelicula;
     private Genero genero;
     private File portada;
+    private Image portadaImg;
     private String estelares;
     private String titulo;
     private String anioEstreno;
@@ -17,20 +19,34 @@ public class Pelicula {
     public Pelicula() {
     }
 
-    public Pelicula(Genero genero, String portada, String estelares, String titulo, String anioEstreno, String director, String clasificacion, String duracion) {
+    public Pelicula(Genero genero, Image portadaImg, String estelares, String titulo, String anioEstreno, String director, String clasificacion, String duracion) {
+        this(genero, estelares, titulo, anioEstreno, director, clasificacion, duracion);
+        this.portadaImg = portadaImg;
+    }
+
+    public Pelicula(Genero genero, File portada, String estelares, String titulo, String anioEstreno, String director, String clasificacion, String duracion) {
+        this(genero, estelares, titulo, anioEstreno, director, clasificacion, duracion);
+        this.portada = portada;
+    }
+
+    public Pelicula(long idPelicula, Genero genero, File portada, String estelares, String titulo, String anioEstreno, String director, String clasificacion, String duracion) {
+        this(genero, portada, estelares, titulo, anioEstreno, director, clasificacion, duracion);
+        this.idPelicula = idPelicula;
+    }
+    
+     public Pelicula(long idPelicula, Genero genero, Image portada, String estelares, String titulo, String anioEstreno, String director, String clasificacion, String duracion) {
+        this(genero, portada, estelares, titulo, anioEstreno, director, clasificacion, duracion);
+        this.idPelicula = idPelicula;
+    }
+
+    public Pelicula(Genero genero, String estelares, String titulo, String anioEstreno, String director, String clasificacion, String duracion) {
         this.genero = genero;
-        this.portada = new File(portada);
         this.estelares = estelares;
         this.titulo = titulo;
         this.anioEstreno = anioEstreno;
         this.director = director;
         this.clasificacion = clasificacion;
         this.duracion = duracion;
-    }
-
-    public Pelicula(long idPelicula, Genero genero, String portada, String estelares, String titulo, String anioEstreno, String director, String clasificacion, String duracion) {
-        this(genero, portada, estelares, titulo, anioEstreno, director, clasificacion, duracion);
-        this.idPelicula = idPelicula;
     }
 
     public long getIdPelicula() {
@@ -104,6 +120,12 @@ public class Pelicula {
     public void setDuracion(String duracion) {
         this.duracion = duracion;
     }
-    
-    
+
+    public Image getPortadaImg() {
+        return portadaImg;
+    }
+
+    public void setPortadaImg(Image portadaImg) {
+        this.portadaImg = portadaImg;
+    }
 }

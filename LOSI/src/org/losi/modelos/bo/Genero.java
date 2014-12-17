@@ -42,4 +42,9 @@ public class Genero {
         this.descripcion = descripcion;
     }
     
+    @Override
+    public String toString(){
+        return nombre;
+    }
+    
 }

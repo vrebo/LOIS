@@ -22,6 +22,7 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
 
     @Override
     public boolean persistir(Cliente e, Connection con) {
+        boolean result = false;
         try {
             try (PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO " + nombreTabla + " ("
@@ -31,7 +32,7 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
                     + apellidoMaternoDAO + ", "
                     + fechaNacimientoDAO + ", "
                     + fechaRegistroDAO + " "
-                    + ") VALUES (?, ?, ?, ?, ?::timestamp, ?::timestamp);")) {
+                    + ") VALUES (?, ?, ?, ?, ?::date, ?::timestamp);")) {
                 ps.setString(1, e.getIdCliente());
                 ps.setString(2, e.getNombre());
                 ps.setString(3, e.getApellidoPaterno());
@@ -39,11 +40,12 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
                 ps.setString(5, e.getFechaNacimiento());
                 ps.setString(6, e.getFechaRegistro());
                 ps.execute();
+                result = true;
             }
         } catch (SQLException ex1) {
             Logger.getLogger(GeneroDAO.class.getName()).log(Level.SEVERE, null, ex1);
         }
-        return false;
+        return result;
     }
 
     @Override
